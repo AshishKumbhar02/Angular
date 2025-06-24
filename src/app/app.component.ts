@@ -1,5 +1,6 @@
 import { Component, OnInit } from '@angular/core';
-import { Observable } from 'rxjs';
+// import { Observable } from 'rxjs';
+import { NameService } from './name.service';
 
 @Component({
   selector: 'app-root',
@@ -8,13 +9,23 @@ import { Observable } from 'rxjs';
 })
 export class AppComponent implements OnInit {
   promise: string = '';
-  observable: string[] = [];
+  // observable: string[] = [];
+  nameList: string[] = [];
 
-  constructor() {}
+  constructor(private nameService: NameService) {}
 
   ngOnInit() {
     this.runPromise();
-    this.runObservable();
+    // this.runObservable();
+
+    this.nameService.getNames().subscribe({
+      next: (data) => {
+        this.nameList = data;
+        console.log('Received names:', this.nameList);
+      },
+      error: (err) => console.error('Error:', err),
+      complete: () => console.log('Name Observable completed'),
+    });
   }
 
   // Promise
@@ -42,20 +53,20 @@ export class AppComponent implements OnInit {
   }
 
   //Observable
-  runObservable() {
-    const observable = new Observable<string>((observer) => {
-      observer.next('First value from Observable');
-      observer.next('Second value from Observable');
-      setTimeout(() => {
-        observer.next('Third value after 5 seconds');
-        observer.complete();
-      }, 5000);
-    });
-    observable.subscribe({
-      next: (value) => { console.log(value);},
-      error: (err) => { console.error(err); },
-      complete: () => { console.log('Observable completed');},
-    });
-  }
+  // runObservable() {
+  //   const observable = new Observable<string>((observer) => {
+  //     observer.next('First value from Observable');
+  //     observer.next('Second value from Observable');
+  //     setTimeout(() => {
+  //       observer.next('Third value after 5 seconds');
+  //       observer.complete();
+  //     }, 5000);
+  //   });
+  //   observable.subscribe({
+  //     next: (value) => { console.log(value);},
+  //     error: (err) => { console.error(err); },
+  //     complete: () => { console.log('Observable completed');},
+  //   });
+  // }
   
 }
